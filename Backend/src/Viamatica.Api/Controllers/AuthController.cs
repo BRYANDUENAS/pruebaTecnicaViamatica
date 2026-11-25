@@ -27,6 +27,20 @@ public class AuthController : ControllerBase
         return Ok(new { message = "La contraseña se actualizó correctamente." });
     }
 
+    /// <summary>Indica al frontend si la recuperación por correo está disponible.</summary>
+    [HttpGet("recovery-options")]
+    [AllowAnonymous]
+    public RecoveryOptions RecoveryOptions() => _auth.RecoveryOptions();
+
+    /// <summary>Envía una contraseña temporal al correo registrado del usuario.</summary>
+    [HttpPost("forgot-password")]
+    [AllowAnonymous]
+    public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest request, CancellationToken ct)
+    {
+        await _auth.ForgotPasswordAsync(request, ct);
+        return Ok(new { message = "Si los datos son correctos, enviamos una contraseña temporal al correo registrado." });
+    }
+
     [HttpPost("logout")]
     [Authorize]
     public async Task<IActionResult> Logout(CancellationToken ct)

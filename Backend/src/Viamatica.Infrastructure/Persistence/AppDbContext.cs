@@ -128,7 +128,8 @@ public class AppDbContext : DbContext, IAppDbContext
                 new MenuItem { MenuItemId = 3, Label = "Usuarios", Route = "/usuarios", Icon = "group", Order = 3 },
                 new MenuItem { MenuItemId = 4, Label = "Asignación de turnos", Route = "/turnos", Icon = "confirmation_number", Order = 4 },
                 new MenuItem { MenuItemId = 5, Label = "Procesos de caja", Route = "/caja", Icon = "point_of_sale", Order = 5 },
-                new MenuItem { MenuItemId = 6, Label = "Clientes", Route = "/clientes", Icon = "badge", Order = 6 });
+                new MenuItem { MenuItemId = 6, Label = "Clientes", Route = "/clientes", Icon = "badge", Order = 6 },
+                new MenuItem { MenuItemId = 7, Label = "Cajas y servicios", Route = "/mantenimiento", Icon = "settings", Order = 4 });
         });
 
         b.Entity<RolMenu>(e =>
@@ -140,6 +141,7 @@ public class AppDbContext : DbContext, IAppDbContext
                 new RolMenu { RolId = RoleCodes.AdminId, MenuItemId = 1 },
                 new RolMenu { RolId = RoleCodes.AdminId, MenuItemId = 2 },
                 new RolMenu { RolId = RoleCodes.AdminId, MenuItemId = 3 },
+                new RolMenu { RolId = RoleCodes.AdminId, MenuItemId = 7 },
                 new RolMenu { RolId = RoleCodes.GestorId, MenuItemId = 1 },
                 new RolMenu { RolId = RoleCodes.GestorId, MenuItemId = 3 },
                 new RolMenu { RolId = RoleCodes.GestorId, MenuItemId = 4 },

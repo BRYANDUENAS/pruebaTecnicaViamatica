@@ -70,9 +70,7 @@ Reglas definidas en la revisión de la fase:
 
 ## 7. Indicadores de bienvenida y dashboard
 
-> Vamos con la fase de indicadores para la pantalla de bienvenida y el dashboard del administrador.
-
-**Resultado:** endpoint de bienvenida con los turnos atendidos del día según el rol y los usuarios pendientes del gestor; indicadores de usuarios (sesión activa o inactiva, bloqueados, pendientes) e indicadores de cajas, cajeros y gestores con filtro de fechas, usando la función `fn_cash_indicators`.
+> Vamos con la fase de indicadores para la pantalla de bienvenida y el dashboard del administrador. debes realizar un endpoint de bienvenida con los turnos atendidos del día según el rol y los usuarios pendientes del gestor; indicadores de usuarios (sesión activa o inactiva, bloqueados, pendientes) e indicadores de cajas, cajeros y gestores con filtro de fechas, usando la función `fn_cash_indicators`.
 
 ## 8. Base del frontend
 
@@ -89,17 +87,28 @@ Reglas definidas en la revisión de la fase:
 ## 10. Pantalla de asignación de turnos
 
 > Vamos con la página de turnos del gestor.
-
-**Resultado:** pantalla del gestor con las cajas y sus cajeros asignados (asignar y retirar), creación de turnos por caja y tipo de atención, y listado de turnos por fecha con opción de mover o eliminar los pendientes.
+lo que debe ver es una pantalla del gestor con las cajas y sus cajeros asignados (asignar y retirar), creación de turnos por caja y tipo de atención, y listado de turnos por fecha con opción de mover o eliminar los pendientes.
 
 ## 11. Pantalla de procesos de caja
 
 > Avancemos con la página de caja.
 
-**Resultado:** pantalla del cajero con apertura y cierre de caja, cola de turnos del día, búsqueda de cliente por identificación con registro si no existe, y los procesos de contratación, pago, cambio de servicio, cambio de forma de pago y cancelación.
+que es lo que debe verse en esta pantalla del cajero pues hay que mostra apertura y cierre de caja, cola de turnos del día, búsqueda de cliente por identificación con registro si no existe, y los procesos de contratación, pago, cambio de servicio, cambio de forma de pago y cancelación.
 
 ## 12. Dashboard del administrador
 
 > Vamos con el dashboard del administrador.
 
-**Resultado:** dashboard con indicadores de usuarios (sesión activa e inactiva, bloqueados, pendientes, por estado y por rol) e indicadores de cajas, cajeros y gestores con filtro por rango de fechas.
+aqui vamos a mostrar con indicadores de usuarios (sesión activa e inactiva, bloqueados, pendientes, por estado y por rol) e indicadores de cajas, cajeros y gestores con filtro por rango de fechas.
+
+## 13. Mantenimiento de cajas y servicios
+
+> Agreguemos la pantalla de mantenimiento de cajas y servicios del administrador.
+
+en esta pantalla mostraremos pantalla del administrador con dos pestañas, cajas y servicios, cada una con tabla, alta y edición en diálogo y eliminación con confirmación; la opción se agregó al menú del administrador en la base de datos.
+
+## 14. Recuperación por correo y asistente con IA
+
+> Antes de Docker quiero darle un plus a la prueba, algo que no pidieron pero que muestre el potencial. Primero, que la recuperación de contraseña sea por correo, para que al usuario le lleguen las nuevas credenciales. Segundo, implementar un asesor de IA: un chat para cada rol. Por ejemplo, el cajero escribe la cédula de un cliente y el asistente responde quién es, qué contrato tiene, desde cuándo y cuándo vence; el administrador puede preguntar cuántas cajas están activas o inactivas. Podemos usar un modelo de Gemini.
+
+**Resultado:** envío de una contraseña temporal al correo registrado (SMTP), manteniendo la validación de identidad como alternativa, y un asistente disponible en todas las pantallas con sugerencias por rol. El servidor reúne solo los datos que el rol puede ver y se los entrega al modelo como contexto; las credenciales quedan en variables de entorno, fuera del repositorio.

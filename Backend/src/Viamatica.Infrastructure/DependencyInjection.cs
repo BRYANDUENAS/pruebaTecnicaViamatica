@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Viamatica.Application.Abstractions;
 using Viamatica.Domain.Common;
 using Viamatica.Domain.Entities;
+using Viamatica.Infrastructure.External;
 using Viamatica.Infrastructure.Persistence;
 using Viamatica.Infrastructure.Security;
 
@@ -18,6 +19,12 @@ public static class DependencyInjection
         services.AddSingleton<IFieldCipher, AesFieldCipher>();
         services.AddSingleton<IPasswordHasher, BcryptPasswordHasher>();
         services.AddSingleton<ITokenService, JwtTokenService>();
+
+        // Servicios externos opcionales: correo (SMTP) y modelo del asistente.
+        services.Configure<EmailOptions>(config.GetSection(EmailOptions.Section));
+        services.AddSingleton<IEmailSender, SmtpEmailSender>();
+        services.Configure<AssistantOptions>(config.GetSection(AssistantOptions.Section));
+        services.AddHttpClient<IAssistantModel, GeminiAssistantModel>(client => client.Timeout = TimeSpan.FromSeconds(40));
 
         services.AddDbContext<AppDbContext>(o => o
             .UseNpgsql(config.GetConnectionString("Default"))
@@ -36,10 +43,18 @@ public static class DependencyInjection
 
         await db.Database.MigrateAsync();
 
+        var hasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
+        await EnsureAdminAsync(db, hasher, config, logger);
+
+        if (config.GetValue<bool>("Seed:DemoData"))
+            await DemoSeeder.SeedAsync(db, hasher, logger);
+    }
+
+    private static async Task EnsureAdminAsync(AppDbContext db, IPasswordHasher hasher, IConfiguration config, ILogger logger)
+    {
         if (await db.Users.IgnoreQueryFilters().AnyAsync(u => u.RolId == RoleCodes.AdminId)) return;
 
         var seed = config.GetSection("Seed:Admin");
-        var hasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
         db.Users.Add(new User
         {
             Username = seed["Username"] ?? "admin001",

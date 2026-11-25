@@ -54,6 +54,9 @@ export class CashesApi {
   constructor(private http: HttpClient) {}
 
   list() { return this.http.get<Cash[]>(this.url); }
+  create(body: unknown) { return this.http.post<Cash>(this.url, body); }
+  update(id: number, body: unknown) { return this.http.put<Cash>(`${this.url}/${id}`, body); }
+  delete(id: number) { return this.http.delete<void>(`${this.url}/${id}`); }
   cashiers() { return this.http.get<CashierOption[]>(`${this.url}/cashiers`); }
   assign(cashId: number, userId: number) { return this.http.post<Cash>(`${this.url}/${cashId}/users`, { userId }); }
   unassign(cashId: number, userId: number) { return this.http.delete<Cash>(`${this.url}/${cashId}/users/${userId}`); }
@@ -100,6 +103,17 @@ export class ContractsApi {
 }
 
 @Injectable({ providedIn: 'root' })
+export class ServicesApi {
+  private readonly url = '/api/services';
+  constructor(private http: HttpClient) {}
+
+  list() { return this.http.get<InternetService[]>(this.url); }
+  create(body: unknown) { return this.http.post<InternetService>(this.url, body); }
+  update(id: number, body: unknown) { return this.http.put<InternetService>(`${this.url}/${id}`, body); }
+  delete(id: number) { return this.http.delete<void>(`${this.url}/${id}`); }
+}
+
+@Injectable({ providedIn: 'root' })
 export class CatalogsApi {
   constructor(private http: HttpClient) {}
 
@@ -116,5 +130,20 @@ export class DashboardApi {
   users() { return this.http.get<UserIndicators>('/api/dashboard/users'); }
   operations(from: string, to: string) {
     return this.http.get<OperationIndicators>('/api/dashboard/operations', { params: query({ from, to }) });
+  }
+}
+
+export interface AssistantMessage {
+  role: 'user' | 'assistant';
+  text: string;
+}
+
+@Injectable({ providedIn: 'root' })
+export class AssistantApi {
+  constructor(private http: HttpClient) {}
+
+  info() { return this.http.get<{ enabled: boolean; suggestions: string[] }>('/api/assistant'); }
+  chat(message: string, history: AssistantMessage[]) {
+    return this.http.post<{ reply: string }>('/api/assistant/chat', { message, history });
   }
 }

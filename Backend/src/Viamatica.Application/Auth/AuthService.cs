@@ -20,6 +20,20 @@ public record LoginResponse(string Token, DateTime ExpiresAt, UserDto User, IRea
 /// </summary>
 public record RecoverPasswordRequest(string Username, string Email, string Identification, string NewPassword);
 
+/// <summary>Recuperación por correo: se envía una contraseña temporal al correo registrado.</summary>
+public record ForgotPasswordRequest(string Username, string Email);
+
+public record RecoveryOptions(bool EmailEnabled);
+
+public class ForgotPasswordValidator : AbstractValidator<ForgotPasswordRequest>
+{
+    public ForgotPasswordValidator()
+    {
+        RuleFor(x => x.Username).NotEmpty().WithMessage("El nombre de usuario es obligatorio.").MaximumLength(20);
+        RuleFor(x => x.Email).NotEmpty().EmailAddress().WithMessage("El correo no es válido.");
+    }
+}
+
 public class LoginValidator : AbstractValidator<LoginRequest>
 {
     public LoginValidator()
@@ -50,6 +64,8 @@ public class AuthService
     private readonly ITokenService _tokens;
     private readonly IValidator<LoginRequest> _loginValidator;
     private readonly IValidator<RecoverPasswordRequest> _recoverValidator;
+    private readonly IValidator<ForgotPasswordRequest> _forgotValidator;
+    private readonly IEmailSender _email;
     private readonly ILogger<AuthService> _logger;
 
     public AuthService(
@@ -59,6 +75,8 @@ public class AuthService
         ITokenService tokens,
         IValidator<LoginRequest> loginValidator,
         IValidator<RecoverPasswordRequest> recoverValidator,
+        IValidator<ForgotPasswordRequest> forgotValidator,
+        IEmailSender email,
         ILogger<AuthService> logger)
     {
         _db = db;
@@ -67,6 +85,8 @@ public class AuthService
         _tokens = tokens;
         _loginValidator = loginValidator;
         _recoverValidator = recoverValidator;
+        _forgotValidator = forgotValidator;
+        _email = email;
         _logger = logger;
     }
 
@@ -180,6 +200,60 @@ public class AuthService
         user.SessionActive = false;
         await _db.SaveChangesAsync(ct);
         _logger.LogInformation("Contraseña recuperada por el usuario {Username}", user.Username);
+    }
+
+    public RecoveryOptions RecoveryOptions() => new(_email.IsConfigured);
+
+    /// <summary>
+    /// Genera una contraseña temporal y la envía al correo registrado. La respuesta
+    /// es la misma exista o no el usuario, para no revelar qué cuentas existen.
+    /// </summary>
+    public async Task ForgotPasswordAsync(ForgotPasswordRequest request, CancellationToken ct)
+    {
+        await _forgotValidator.ValidateAndThrowAsync(request, ct);
+        if (!_email.IsConfigured)
+            throw new DomainException("El envío de correos no está configurado. Use la validación de identidad.", 503);
+
+        var email = request.Email.Trim().ToLowerInvariant();
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Username == request.Username && u.Email == email, ct);
+        if (user is null || user.StatusId is UserStatusCodes.Pending or UserStatusCodes.Inactive)
+        {
+            _logger.LogWarning("Recuperación por correo sin efecto para {Username}: datos incorrectos o usuario no habilitado", request.Username);
+            return;
+        }
+
+        // Primero se envía el correo: si falla, la contraseña actual no cambia.
+        var temporary = TemporaryPassword();
+        await _email.SendAsync(email, "NetCaja: su contraseña temporal", $"""
+            <div style="font-family:Arial,sans-serif;max-width:480px;margin:auto;color:#1a1c1e">
+              <h2 style="color:#0b57b0">Recuperación de contraseña</h2>
+              <p>Hola, {System.Net.WebUtility.HtmlEncode(user.FirstName)}:</p>
+              <p>Se solicitó recuperar la contraseña del usuario <strong>{user.Username}</strong>. Su contraseña temporal es:</p>
+              <p style="font-size:22px;font-family:monospace;letter-spacing:2px;background:#e0f5f5;padding:14px;border-radius:8px;text-align:center">{temporary}</p>
+              <p>Ingrese al sistema con ella. Si usted no hizo esta solicitud, comuníquese con un administrador.</p>
+            </div>
+            """, ct);
+
+        user.Password = _hasher.Hash(temporary);
+        user.FailedAttempts = 0;
+        user.SessionActive = false;
+        await _db.SaveChangesAsync(ct);
+        _logger.LogInformation("Contraseña temporal enviada por correo al usuario {Username}", user.Username);
+    }
+
+    /// <summary>12 caracteres aleatorios, con mayúscula y número garantizados; sin caracteres ambiguos.</summary>
+    private static string TemporaryPassword()
+    {
+        const string upper = "ABCDEFGHJKLMNPQRSTUVWXYZ", lower = "abcdefghijkmnpqrstuvwxyz", digits = "23456789";
+        var all = upper + lower + digits;
+        var chars = new List<char>
+        {
+            upper[System.Security.Cryptography.RandomNumberGenerator.GetInt32(upper.Length)],
+            digits[System.Security.Cryptography.RandomNumberGenerator.GetInt32(digits.Length)],
+        };
+        while (chars.Count < 12) chars.Add(all[System.Security.Cryptography.RandomNumberGenerator.GetInt32(all.Length)]);
+        System.Security.Cryptography.RandomNumberGenerator.Shuffle(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(chars));
+        return new string(chars.ToArray());
     }
 
     private async Task<IReadOnlyList<MenuItemDto>> MenuAsync(int rolId, CancellationToken ct) =>

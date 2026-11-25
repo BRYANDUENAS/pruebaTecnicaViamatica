@@ -50,6 +50,15 @@ export class AuthService {
     return this.http.post<{ message: string }>('/api/auth/recover-password', body);
   }
 
+  /** Indica si el servidor puede enviar la contraseña temporal por correo. */
+  recoveryOptions() {
+    return this.http.get<{ emailEnabled: boolean }>('/api/auth/recovery-options');
+  }
+
+  forgotPassword(body: { username: string; email: string }) {
+    return this.http.post<{ message: string }>('/api/auth/forgot-password', body);
+  }
+
   /** Cierra la sesión en el servidor (libera la caja) y limpia el navegador. */
   logout(): void {
     if (this.token()) {

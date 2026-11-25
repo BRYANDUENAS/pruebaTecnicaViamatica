@@ -1,0 +1,102 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1>Cajas y servicios</h1>
+      <p>Mantenimiento de las cajas de atención y de los planes de internet.</p>
+    </div>
+  </div>
+
+  <mat-tab-group animationDuration="0ms">
+    <!-- Cajas -->
+    <mat-tab label="Cajas">
+      <div class="row between tab-toolbar">
+        <span class="muted">Cada caja admite un máximo de 2 cajeros, que asigna el gestor.</span>
+        <button mat-flat-button (click)="openCash()"><mat-icon>add</mat-icon> Nueva caja</button>
+      </div>
+      <div class="table-wrap">
+        <table mat-table [dataSource]="cashes">
+          <ng-container matColumnDef="description">
+            <th mat-header-cell *matHeaderCellDef>Caja</th>
+            <td mat-cell *matCellDef="let c"><strong>{{ c.cashDescription }}</strong></td>
+          </ng-container>
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Estado</th>
+            <td mat-cell *matCellDef="let c">
+              <span class="badge" [class.ok]="c.active">{{ c.active ? 'Activa' : 'Inactiva' }}</span>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="use">
+            <th mat-header-cell *matHeaderCellDef>Uso</th>
+            <td mat-cell *matCellDef="let c">
+              <span class="badge info" *ngIf="c.currentUsername">Abierta por {{ c.currentUsername }}</span>
+              <span class="muted" *ngIf="!c.currentUsername">Cerrada</span>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="cashiers">
+            <th mat-header-cell *matHeaderCellDef>Cajeros asignados</th>
+            <td mat-cell *matCellDef="let c">{{ cashierNames(c) }}</td>
+          </ng-container>
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let c" class="actions">
+              <button mat-icon-button (click)="openCash(c)" [attr.aria-label]="'Editar ' + c.cashDescription" matTooltip="Editar">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button (click)="removeCash(c)" [attr.aria-label]="'Eliminar ' + c.cashDescription" matTooltip="Eliminar">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="cashColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: cashColumns"></tr>
+          <tr *matNoDataRow><td class="empty" [attr.colspan]="cashColumns.length">No hay cajas registradas.</td></tr>
+        </table>
+      </div>
+    </mat-tab>
+
+    <!-- Servicios -->
+    <mat-tab label="Servicios">
+      <div class="row between tab-toolbar">
+        <span class="muted">Planes de internet disponibles para contratar.</span>
+        <button mat-flat-button (click)="openService()"><mat-icon>add</mat-icon> Nuevo servicio</button>
+      </div>
+      <div class="table-wrap">
+        <table mat-table [dataSource]="services">
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Servicio</th>
+            <td mat-cell *matCellDef="let s">
+              <strong>{{ s.serviceName }}</strong>
+              <div class="muted small-text">{{ s.serviceDescription }}</div>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="speed">
+            <th mat-header-cell *matHeaderCellDef>Velocidad</th>
+            <td mat-cell *matCellDef="let s">{{ s.speedMbps }} Mbps</td>
+          </ng-container>
+          <ng-container matColumnDef="price">
+            <th mat-header-cell *matHeaderCellDef>Precio mensual</th>
+            <td mat-cell *matCellDef="let s">{{ s.price | currency: 'USD' }}</td>
+          </ng-container>
+          <ng-container matColumnDef="devices">
+            <th mat-header-cell *matHeaderCellDef>Equipos</th>
+            <td mat-cell *matCellDef="let s">{{ s.devices.join(', ') || '—' }}</td>
+          </ng-container>
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let s" class="actions">
+              <button mat-icon-button (click)="openService(s)" [attr.aria-label]="'Editar ' + s.serviceName" matTooltip="Editar">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button (click)="removeService(s)" [attr.aria-label]="'Eliminar ' + s.serviceName" matTooltip="Eliminar">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="serviceColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: serviceColumns"></tr>
+          <tr *matNoDataRow><td class="empty" [attr.colspan]="serviceColumns.length">No hay servicios registrados.</td></tr>
+        </table>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

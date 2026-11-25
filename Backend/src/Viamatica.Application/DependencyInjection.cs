@@ -17,6 +17,7 @@ public static class DependencyInjection
         services.AddScoped<Payments.PaymentService>();
         services.AddScoped<Services.InternetServiceService>();
         services.AddScoped<Dashboard.DashboardService>();
+        services.AddScoped<Assistant.AssistantService>();
         return services;
     }
 }

@@ -536,6 +536,14 @@ namespace Viamatica.Infrastructure.Persistence.Migrations
                             Label = "Clientes",
                             Order = 6,
                             Route = "/clientes"
+                        },
+                        new
+                        {
+                            MenuItemId = 7,
+                            Icon = "settings",
+                            Label = "Cajas y servicios",
+                            Order = 4,
+                            Route = "/mantenimiento"
                         });
                 });
 
@@ -707,6 +715,11 @@ namespace Viamatica.Infrastructure.Persistence.Migrations
                         {
                             RolId = 1,
                             MenuItemId = 3
+                        },
+                        new
+                        {
+                            RolId = 1,
+                            MenuItemId = 7
                         },
                         new
                         {

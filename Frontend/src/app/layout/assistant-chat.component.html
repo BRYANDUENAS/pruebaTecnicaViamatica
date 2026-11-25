@@ -1,0 +1,41 @@
+<button mat-fab class="launcher" (click)="toggle()" [attr.aria-label]="open ? 'Cerrar asistente' : 'Abrir asistente'"
+        [attr.aria-expanded]="open" matTooltip="Asistente" matTooltipPosition="left">
+  <mat-icon>{{ open ? 'close' : 'smart_toy' }}</mat-icon>
+</button>
+
+<section class="panel" *ngIf="open" role="dialog" aria-label="Asistente">
+  <header>
+    <mat-icon>smart_toy</mat-icon>
+    <div class="spacer">
+      <strong>Asistente NetCaja</strong>
+      <span>Responde con los datos de su rol</span>
+    </div>
+    <button mat-icon-button (click)="clear()" *ngIf="messages.length" aria-label="Borrar conversación" matTooltip="Borrar conversación">
+      <mat-icon>delete_sweep</mat-icon>
+    </button>
+  </header>
+
+  <div class="messages" #scroll aria-live="polite">
+    <div class="notice" *ngIf="!enabled">
+      El asistente no está configurado en este servidor. Falta la clave del modelo de IA.
+    </div>
+
+    <ng-container *ngIf="enabled && !messages.length">
+      <p class="intro">Hola. Puedo ayudarle con consultas rápidas. Pruebe con:</p>
+      <button type="button" class="suggestion" *ngFor="let suggestion of suggestions" (click)="send(suggestion)">
+        {{ suggestion }}
+      </button>
+    </ng-container>
+
+    <div class="bubble" *ngFor="let message of messages" [class.mine]="message.role === 'user'">{{ message.text }}</div>
+    <div class="bubble typing" *ngIf="thinking">Consultando…</div>
+  </div>
+
+  <form class="composer" (ngSubmit)="send()">
+    <input name="draft" [(ngModel)]="draft" maxlength="500" autocomplete="off" aria-label="Pregunta para el asistente"
+           [placeholder]="enabled ? 'Escriba su pregunta' : 'Asistente no disponible'" [disabled]="!enabled" />
+    <button mat-icon-button type="submit" [disabled]="!draft.trim() || thinking || !enabled" aria-label="Enviar pregunta">
+      <mat-icon>send</mat-icon>
+    </button>
+  </form>
+</section>

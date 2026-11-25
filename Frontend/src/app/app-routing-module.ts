@@ -34,6 +34,12 @@ const routes: Routes = [
         loadChildren: () => import('./features/users/users.module').then((m) => m.UsersModule),
       },
       {
+        path: 'mantenimiento',
+        canActivate: [roleGuard],
+        data: { roles: [ROLES.admin] },
+        loadChildren: () => import('./features/maintenance/maintenance.module').then((m) => m.MaintenanceModule),
+      },
+      {
         path: 'turnos',
         canActivate: [roleGuard],
         data: { roles: [ROLES.gestor] },
