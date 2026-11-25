@@ -42,6 +42,17 @@ public class AppDbContext : DbContext, IAppDbContext
         return rows.Single();
     }
 
+    public async Task<bool> TryOpenCashAsync(int cashId, int userId, CancellationToken ct = default)
+    {
+        var now = DateTime.UtcNow;
+        var updated = await Cashes
+            .Where(c => c.CashId == cashId && c.CurrentUserId == null)
+            .ExecuteUpdateAsync(s => s
+                .SetProperty(c => c.CurrentUserId, userId)
+                .SetProperty(c => c.OpenedAt, now), ct);
+        return updated == 1;
+    }
+
     /// <summary>Convierte los borrados físicos en eliminaciones lógicas.</summary>
     public override Task<int> SaveChangesAsync(CancellationToken ct = default)
     {

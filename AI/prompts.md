@@ -37,3 +37,22 @@ Reglas definidas en la revisión de la fase:
 > - Una identificación eliminada no se puede volver a registrar: la eliminación es lógica, el cliente sigue existiendo y solo deja de ser visible.
 > - Al eliminar un cliente hay que validar que no tenga un contrato vigente; si lo tiene, se muestra un mensaje indicando que primero debe cancelarlo.
 > - El teléfono queda con un máximo de 13 dígitos, por el código de país y la estructura de la base de datos.
+
+## 5. Cajas, asignación de cajeros y turnos
+
+> Vamos con la fase de cajas: asignación de cajeros y turnos, con estas reglas:
+>
+> - Antes de atender un turno, el cajero debe abrir la caja; con eso se valida que los 2 cajeros asignados no puedan tener abierta la misma caja al mismo tiempo.
+> - Solo el administrador crea y edita las cajas.
+> - El gestor únicamente asigna los cajeros a las cajas y los turnos a esas cajas.
+> - Un cajero solo puede atender una caja.
+> - El contrato tendrá una duración de 1 año por defecto, ya que el enunciado no establece un tiempo.
+
+**Resultado:** mantenimiento de cajas, asignación de cajeros (máximo 2 por caja), apertura y cierre de caja con control de concurrencia, y CRUD de turnos con la descripción generada por la función `fn_create_turn`.
+
+Reglas definidas en la revisión de la fase:
+
+> - Una caja no se puede cerrar si tiene un turno en atención; primero se debe finalizar el turno.
+> - Si la caja no tiene cajeros asignados no se pueden crear turnos, ya que no hay quien los atienda.
+> - Al cerrar sesión, la caja queda libre para que el otro cajero asignado pueda usarla.
+> - La aprobación del administrador aplica a los usuarios creados por el gestor; las asignaciones de cajeros y turnos quedan activas de inmediato.

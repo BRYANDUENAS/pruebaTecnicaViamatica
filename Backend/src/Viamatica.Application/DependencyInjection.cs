@@ -11,6 +11,8 @@ public static class DependencyInjection
         services.AddScoped<Auth.AuthService>();
         services.AddScoped<Users.UserService>();
         services.AddScoped<Clients.ClientService>();
+        services.AddScoped<Cashes.CashService>();
+        services.AddScoped<Turns.TurnService>();
         return services;
     }
 }

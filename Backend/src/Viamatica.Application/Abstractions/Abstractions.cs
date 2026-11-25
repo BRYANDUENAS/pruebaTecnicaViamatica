@@ -32,6 +32,12 @@ public interface IAppDbContext
     /// <c>fn_create_turn</c>, que genera la descripción (ej. AC0001). Devuelve el id.
     /// </summary>
     Task<int> CreateTurnAsync(string attentionTypeId, int cashId, int gestorId, CancellationToken ct = default);
+
+    /// <summary>
+    /// Marca la caja como abierta por el usuario solo si nadie la tiene abierta.
+    /// Es una única sentencia UPDATE condicional, así que es segura ante concurrencia.
+    /// </summary>
+    Task<bool> TryOpenCashAsync(int cashId, int userId, CancellationToken ct = default);
 }
 
 /// <summary>Cifrado reversible para datos sensibles (correo, identificación, claims).</summary>
