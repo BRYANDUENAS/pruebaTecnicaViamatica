@@ -1,0 +1,28 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+[Ll]ogs/
+*.log
+
+# Angular / Node
+node_modules/
+dist/
+.angular/
+coverage/
+
+# Entorno y secretos
+.env
+*.local
+
+# IDE y sistema
+.idea/
+.vscode/*
+!.vscode/extensions.json
+Thumbs.db
+.DS_Store
+
+# Configuración local del asistente
+.claude/
