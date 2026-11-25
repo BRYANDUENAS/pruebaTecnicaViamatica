@@ -1,21 +1,11 @@
-import { Component, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../../shared/shared.module';
-
-@Component({
-  selector: 'app-users',
-  standalone: false,
-  template: `
-    <div class="page">
-      <div class="page-header"><h1>Usuarios</h1></div>
-      <div class="empty">Pantalla en construcción.</div>
-    </div>
-  `,
-})
-export class UsersComponent {}
+import { UserDialogComponent } from './user-dialog.component';
+import { UsersComponent } from './users.component';
 
 @NgModule({
-  declarations: [UsersComponent],
+  declarations: [UsersComponent, UserDialogComponent],
   imports: [SharedModule, RouterModule.forChild([{ path: '', component: UsersComponent }])],
 })
 export class UsersModule {}

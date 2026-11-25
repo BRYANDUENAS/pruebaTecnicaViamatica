@@ -78,3 +78,10 @@ table.plain th, table.plain td { text-align: left; padding: 6px 8px; border-bott
 .snack-error { --mat-snack-bar-container-color: var(--app-warn); --mat-snack-bar-supporting-text-color: #fff; --mat-snack-bar-button-color: #fff; }
 
 .global-progress { position: fixed; top: 0; left: 0; right: 0; z-index: 2000; }
+
+// ----- Listados -----
+
+.filters { margin-bottom: 16px; }
+.filters mat-form-field { min-width: 180px; }
+td.actions { text-align: right; white-space: nowrap; }
+.hint { margin-top: 12px; font-size: 13px; }

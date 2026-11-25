@@ -84,3 +84,10 @@ Reglas definidas en la revisión de la fase:
 
 > Continuemos con las pantallas de usuarios y clientes, ya que son parecidas y comparten la misma carga masiva de datos. Luego avanzaremos con la página de turnos, la de caja y finalmente el dashboard. Como ya está armada toda la lógica del backend, se trata de construir las pantallas, consumir los datos y mostrarlos de forma elegante en la interfaz.
 
+**Resultado:** pantallas de usuarios y de clientes con tabla, búsqueda y filtros, diálogos de alta y edición con las validaciones del backend, cambio de estado, aprobación de usuarios, eliminación con confirmación y un componente compartido de carga masiva desde Excel o CSV.
+
+## 10. Pantalla de asignación de turnos
+
+> Vamos con la página de turnos del gestor.
+
+**Resultado:** pantalla del gestor con las cajas y sus cajeros asignados (asignar y retirar), creación de turnos por caja y tipo de atención, y listado de turnos por fecha con opción de mover o eliminar los pendientes.
