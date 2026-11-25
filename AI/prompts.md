@@ -86,20 +86,15 @@ Reglas definidas en la revisión de la fase:
 
 ## 10. Pantalla de asignación de turnos
 
-> Vamos con la página de turnos del gestor.
-lo que debe ver es una pantalla del gestor con las cajas y sus cajeros asignados (asignar y retirar), creación de turnos por caja y tipo de atención, y listado de turnos por fecha con opción de mover o eliminar los pendientes.
+> Vamos con la página de turnos del gestor. lo que debe ver es una pantalla del gestor con las cajas y sus cajeros asignados (asignar y retirar), creación de turnos por caja y tipo de atención, y listado de turnos por fecha con opción de mover o eliminar los pendientes.
 
 ## 11. Pantalla de procesos de caja
 
-> Avancemos con la página de caja.
-
-que es lo que debe verse en esta pantalla del cajero pues hay que mostra apertura y cierre de caja, cola de turnos del día, búsqueda de cliente por identificación con registro si no existe, y los procesos de contratación, pago, cambio de servicio, cambio de forma de pago y cancelación.
+> Avancemos con la página de caja. que es lo que debe verse en esta pantalla del cajero pues hay que mostra apertura y cierre de caja, cola de turnos del día, búsqueda de cliente por identificación con registro si no existe, y los procesos de contratación, pago, cambio de servicio, cambio de forma de pago y cancelación.
 
 ## 12. Dashboard del administrador
 
-> Vamos con el dashboard del administrador.
-
-aqui vamos a mostrar con indicadores de usuarios (sesión activa e inactiva, bloqueados, pendientes, por estado y por rol) e indicadores de cajas, cajeros y gestores con filtro por rango de fechas.
+> Vamos con el dashboard del administrador. aqui vamos a mostrar con indicadores de usuarios (sesión activa e inactiva, bloqueados, pendientes, por estado y por rol) e indicadores de cajas, cajeros y gestores con filtro por rango de fechas.
 
 ## 13. Mantenimiento de cajas y servicios
 
@@ -121,6 +116,6 @@ en esta pantalla mostraremos pantalla del administrador con dos pestañas, cajas
 
 ## 16. Dockerización y entrega
 
-> Hagamos el commit y vamos con Docker.
+> Hagamos el commit y vamos con Docker: un Dockerfile por servicio y un `docker-compose` que levante todas las tecnologías conectadas y funcionando. Conecta con nginx la API y el frontend; que la aplicación quede en http://localhost:8080 y Swagger en http://localhost:5080/swagger.
 
 **Resultado:** imágenes del backend y del frontend, `docker-compose` con base de datos, API y frontend comunicados por nginx, colección de Postman y README de cada proyecto.
