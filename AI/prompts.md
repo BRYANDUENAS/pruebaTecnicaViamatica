@@ -56,3 +56,14 @@ Reglas definidas en la revisión de la fase:
 > - Si la caja no tiene cajeros asignados no se pueden crear turnos, ya que no hay quien los atienda.
 > - Al cerrar sesión, la caja queda libre para que el otro cajero asignado pueda usarla.
 > - La aprobación del administrador aplica a los usuarios creados por el gestor; las asignaciones de cajeros y turnos quedan activas de inmediato.
+
+## 6. Contratos y pagos
+
+> Vamos con la fase de contratos y pagos:
+>
+> - Un cliente solo puede tener un contrato vigente a la vez.
+> - El pago es siempre por el precio mensual del servicio contratado; no hay monto libre.
+> - El cambio de servicio se rechaza si el servicio nuevo es el mismo que ya tiene el cliente.
+> - Al cancelar un contrato, la fecha fin pasa a ser la fecha de la cancelación.
+
+**Resultado:** contratación con duración de 1 año, cambio de servicio (contrato sustituido y nuevo contrato de renovación que conserva la fecha final), cambio de forma de pago, cancelación, CRUD de pagos y mantenimiento de servicios con sus equipos.
