@@ -97,3 +97,8 @@ Reglas definidas en la revisión de la fase:
 > Avancemos con la página de caja.
 
 **Resultado:** pantalla del cajero con apertura y cierre de caja, cola de turnos del día, búsqueda de cliente por identificación con registro si no existe, y los procesos de contratación, pago, cambio de servicio, cambio de forma de pago y cancelación.
+
+## 12. Dashboard del administrador
+
+> Vamos con el dashboard del administrador.
+
