@@ -53,6 +53,12 @@ public class AppDbContext : DbContext, IAppDbContext
         return updated == 1;
     }
 
+    public Task<List<Application.Dashboard.CashIndicator>> CashIndicatorsAsync(DateTime fromUtc, DateTime toUtc, CancellationToken ct = default) =>
+        Database
+            // Las columnas de la función ya están en snake_case, igual que la convención del contexto.
+            .SqlQuery<Application.Dashboard.CashIndicator>($"SELECT * FROM fn_cash_indicators({fromUtc}, {toUtc})")
+            .ToListAsync(ct);
+
     /// <summary>Convierte los borrados físicos en eliminaciones lógicas.</summary>
     public override Task<int> SaveChangesAsync(CancellationToken ct = default)
     {

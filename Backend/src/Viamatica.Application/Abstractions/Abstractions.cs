@@ -38,6 +38,9 @@ public interface IAppDbContext
     /// Es una única sentencia UPDATE condicional, así que es segura ante concurrencia.
     /// </summary>
     Task<bool> TryOpenCashAsync(int cashId, int userId, CancellationToken ct = default);
+
+    /// <summary>Indicadores por caja con la función de base de datos <c>fn_cash_indicators</c>.</summary>
+    Task<List<Dashboard.CashIndicator>> CashIndicatorsAsync(DateTime fromUtc, DateTime toUtc, CancellationToken ct = default);
 }
 
 /// <summary>Cifrado reversible para datos sensibles (correo, identificación, claims).</summary>

@@ -67,3 +67,14 @@ Reglas definidas en la revisión de la fase:
 > - Al cancelar un contrato, la fecha fin pasa a ser la fecha de la cancelación.
 
 **Resultado:** contratación con duración de 1 año, cambio de servicio (contrato sustituido y nuevo contrato de renovación que conserva la fecha final), cambio de forma de pago, cancelación, CRUD de pagos y mantenimiento de servicios con sus equipos.
+
+## 7. Indicadores de bienvenida y dashboard
+
+> Vamos con la fase de indicadores para la pantalla de bienvenida y el dashboard del administrador.
+
+**Resultado:** endpoint de bienvenida con los turnos atendidos del día según el rol y los usuarios pendientes del gestor; indicadores de usuarios (sesión activa o inactiva, bloqueados, pendientes) e indicadores de cajas, cajeros y gestores con filtro de fechas, usando la función `fn_cash_indicators`.
+
+## 8. Base del frontend
+
+> Vamos con el frontend. Ya tengo instalado el CLI 21 de Angular, así que utilicemos NgModules y no componentes standalone, ya que debemos modularizar y usar rutas que llamen a los módulos. Utiliza un color azul primario y turquesa de acento, con un login que haga referencia a una empresa de internet. El menú debe ir preferiblemente en un sidebar, cargado desde la base de datos de forma dinámica según el rol, y en la barra superior el usuario y el cierre de sesión.
+
