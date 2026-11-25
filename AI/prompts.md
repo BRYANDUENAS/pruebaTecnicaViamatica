@@ -91,3 +91,9 @@ Reglas definidas en la revisión de la fase:
 > Vamos con la página de turnos del gestor.
 
 **Resultado:** pantalla del gestor con las cajas y sus cajeros asignados (asignar y retirar), creación de turnos por caja y tipo de atención, y listado de turnos por fecha con opción de mover o eliminar los pendientes.
+
+## 11. Pantalla de procesos de caja
+
+> Avancemos con la página de caja.
+
+**Resultado:** pantalla del cajero con apertura y cierre de caja, cola de turnos del día, búsqueda de cliente por identificación con registro si no existe, y los procesos de contratación, pago, cambio de servicio, cambio de forma de pago y cancelación.

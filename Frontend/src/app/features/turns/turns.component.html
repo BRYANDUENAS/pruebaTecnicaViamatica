@@ -1,0 +1,151 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1>Asignación de turnos</h1>
+      <p>Asigne los cajeros a cada caja y los turnos que atenderán.</p>
+    </div>
+  </div>
+
+  <!-- Cajas y cajeros -->
+  <h2 class="section-title">Cajas</h2>
+  <div class="cash-grid">
+    <mat-card *ngFor="let cash of cashes" class="cash" [class.inactive]="!cash.active">
+      <mat-card-content>
+        <div class="row between">
+          <strong class="cash-name"><mat-icon>point_of_sale</mat-icon> {{ cash.cashDescription }}</strong>
+          <span class="badge" *ngIf="!cash.active">Inactiva</span>
+          <span class="badge ok" *ngIf="cash.active && cash.currentUsername">Abierta</span>
+          <span class="badge" *ngIf="cash.active && !cash.currentUsername">Cerrada</span>
+        </div>
+        <p class="muted small" *ngIf="cash.currentUsername">En uso por {{ cash.currentUsername }}</p>
+
+        <div class="cashiers">
+          <div class="cashier" *ngFor="let user of cash.users">
+            <mat-icon>person</mat-icon>
+            <div class="spacer">
+              <div>{{ user.fullName }}</div>
+              <div class="muted small">{{ user.username }}</div>
+            </div>
+            <button mat-icon-button (click)="unassign(cash, user.userId, user.username)"
+                    [attr.aria-label]="'Retirar a ' + user.username" matTooltip="Retirar de la caja">
+              <mat-icon>person_remove</mat-icon>
+            </button>
+          </div>
+          <p class="muted small" *ngIf="!cash.users.length">Sin cajeros asignados.</p>
+        </div>
+
+        <ng-container *ngIf="canAssign(cash)">
+          <button mat-stroked-button [matMenuTriggerFor]="cashierMenu" [disabled]="!freeCashiers.length">
+            <mat-icon>person_add</mat-icon> Asignar cajero
+          </button>
+          <mat-menu #cashierMenu="matMenu">
+            <button mat-menu-item *ngFor="let cashier of freeCashiers" (click)="assign(cash, cashier.userId)">
+              {{ cashier.fullName }} ({{ cashier.username }})
+            </button>
+          </mat-menu>
+          <p class="muted small" *ngIf="!freeCashiers.length">No hay cajeros disponibles.</p>
+        </ng-container>
+        <p class="muted small" *ngIf="cash.active && !canAssign(cash)">Caja completa: máximo 2 cajeros.</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Nuevo turno -->
+  <h2 class="section-title">Nuevo turno</h2>
+  <mat-card>
+    <mat-card-content>
+      <div class="row">
+        <mat-form-field class="spacer" subscriptSizing="dynamic">
+          <mat-label>Tipo de atención</mat-label>
+          <mat-select [(ngModel)]="newTurn.attentionTypeId">
+            <mat-option *ngFor="let type of attentionTypes" [value]="type.attentionTypeId">
+              {{ type.description }} ({{ type.prefix }})
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="spacer" subscriptSizing="dynamic">
+          <mat-label>Caja</mat-label>
+          <mat-select [(ngModel)]="newTurn.cashId">
+            <mat-option *ngFor="let cash of availableCashes" [value]="cash.cashId">{{ cash.cashDescription }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <button mat-flat-button (click)="createTurn()"
+                [disabled]="newTurn.cashId === null || newTurn.attentionTypeId === null">
+          <mat-icon>confirmation_number</mat-icon> Asignar turno
+        </button>
+      </div>
+      <p class="muted small">
+        El número del turno se genera según el tipo de atención. Solo aparecen las cajas activas con cajeros asignados.
+      </p>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Turnos del día -->
+  <div class="row between section-title">
+    <h2>Turnos asignados</h2>
+    <div class="row">
+      <span class="badge warn">{{ count(status.pending) }} pendientes</span>
+      <span class="badge info">{{ count(status.inProgress) }} en atención</span>
+      <span class="badge ok">{{ count(status.attended) }} atendidos</span>
+      <mat-form-field subscriptSizing="dynamic">
+        <mat-label>Fecha</mat-label>
+        <input matInput type="date" [(ngModel)]="date" (ngModelChange)="loadTurns()" />
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table mat-table [dataSource]="turns">
+      <ng-container matColumnDef="description">
+        <th mat-header-cell *matHeaderCellDef>Turno</th>
+        <td mat-cell *matCellDef="let t"><strong class="turn-code">{{ t.description }}</strong></td>
+      </ng-container>
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef>Tipo de atención</th>
+        <td mat-cell *matCellDef="let t">{{ t.attentionTypeDescription }}</td>
+      </ng-container>
+      <ng-container matColumnDef="cash">
+        <th mat-header-cell *matHeaderCellDef>Caja</th>
+        <td mat-cell *matCellDef="let t">{{ t.cashDescription }}</td>
+      </ng-container>
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Estado</th>
+        <td mat-cell *matCellDef="let t"><span class="badge" [ngClass]="badge(t)">{{ t.statusDescription }}</span></td>
+      </ng-container>
+      <ng-container matColumnDef="cashier">
+        <th mat-header-cell *matHeaderCellDef>Atendido por</th>
+        <td mat-cell *matCellDef="let t">{{ t.cashierUsername || '—' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="time">
+        <th mat-header-cell *matHeaderCellDef>Creado</th>
+        <td mat-cell *matCellDef="let t">{{ t.date | date: 'HH:mm' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let t" class="actions">
+          <ng-container *ngIf="t.statusId === status.pending">
+            <button mat-icon-button [matMenuTriggerFor]="moveMenu" [disabled]="!otherCashes(t).length"
+                    [attr.aria-label]="'Mover el turno ' + t.description" matTooltip="Mover a otra caja">
+              <mat-icon>swap_horiz</mat-icon>
+            </button>
+            <mat-menu #moveMenu="matMenu">
+              <button mat-menu-item *ngFor="let cash of otherCashes(t)" (click)="move(t, cash)">
+                {{ cash.cashDescription }}
+              </button>
+            </mat-menu>
+            <button mat-icon-button (click)="remove(t)"
+                    [attr.aria-label]="'Eliminar el turno ' + t.description" matTooltip="Eliminar turno">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </ng-container>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+      <tr mat-row *matRowDef="let row; columns: columns"></tr>
+      <tr *matNoDataRow>
+        <td class="empty" [attr.colspan]="columns.length">No hay turnos asignados en esta fecha.</td>
+      </tr>
+    </table>
+  </div>
+</div>
