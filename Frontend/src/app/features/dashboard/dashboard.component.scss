@@ -1,0 +1,65 @@
+// Colores de las series, verificados para daltonismo (azul y turquesa del tema).
+$attended: #1565c0;
+$pending: #00a6a6;
+
+h2 { margin: 28px 0 12px; font: var(--mat-sys-title-large); }
+.operations-header h2 { margin: 0; }
+.operations-header { margin: 32px 0 12px; }
+.section { margin-top: 20px; }
+.small { font-size: 12px; }
+
+.two-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.status-icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+  vertical-align: text-bottom;
+
+  &.bad { color: var(--app-warn); }
+  &.warn { color: #8a5300; }
+}
+
+.range-error { margin: 0 0 12px; color: var(--app-warn); font-size: 13px; }
+
+// ----- Barras horizontales -----
+
+.bar-row {
+  display: grid;
+  grid-template-columns: minmax(110px, 190px) 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.bar-label { font-size: 14px; }
+.bar-value { min-width: 28px; text-align: right; font-variant-numeric: tabular-nums; font-weight: 500; }
+.bar-value.wide { min-width: 64px; }
+.bar-track { display: block; height: 14px; }
+
+.bar {
+  display: block;
+  height: 100%;
+  min-width: 2px;
+  border-radius: 0 4px 4px 0;
+  background: $attended;
+}
+
+// Barra apilada: 2px de separación entre segmentos.
+.stack { display: flex; gap: 2px; height: 100%; }
+.segment { min-width: 4px; }
+.segment:last-child { border-radius: 0 4px 4px 0; }
+.segment.attended, .swatch.attended { background: $attended; }
+.segment.pending, .swatch.pending { background: $pending; }
+
+.legend { display: inline-flex; align-items: center; gap: 6px; margin-right: 16px; }
+.swatch { display: inline-block; width: 10px; height: 10px; border-radius: 2px; }
+
+.empty.compact { padding: 16px; }
+
+th.number, td.number { text-align: right; font-variant-numeric: tabular-nums; }

@@ -102,3 +102,4 @@ Reglas definidas en la revisión de la fase:
 
 > Vamos con el dashboard del administrador.
 
+**Resultado:** dashboard con indicadores de usuarios (sesión activa e inactiva, bloqueados, pendientes, por estado y por rol) e indicadores de cajas, cajeros y gestores con filtro por rango de fechas.

@@ -1,0 +1,169 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1>Dashboard</h1>
+      <p>Indicadores de usuarios y de la operación de las cajas.</p>
+    </div>
+  </div>
+
+  <!-- Usuarios: estado actual, sin filtro de fecha -->
+  <ng-container *ngIf="users as u">
+    <h2>Usuarios</h2>
+    <div class="card-grid">
+      <div class="stat">
+        <div class="value">{{ u.total }}</div>
+        <div class="label">Usuarios registrados</div>
+      </div>
+      <div class="stat">
+        <div class="value">{{ u.sessionActive }}</div>
+        <div class="label">Con sesión activa</div>
+      </div>
+      <div class="stat">
+        <div class="value">{{ u.sessionInactive }}</div>
+        <div class="label">Con sesión inactiva</div>
+      </div>
+      <div class="stat">
+        <div class="value">{{ u.blocked }}</div>
+        <div class="label"><mat-icon class="status-icon bad">block</mat-icon> Bloqueados</div>
+      </div>
+      <div class="stat">
+        <div class="value">{{ u.pendingApproval }}</div>
+        <div class="label"><mat-icon class="status-icon warn">hourglass_top</mat-icon> Pendientes de aprobación</div>
+      </div>
+    </div>
+
+    <div class="two-columns">
+      <mat-card>
+        <mat-card-header><mat-card-title>Usuarios por estado</mat-card-title></mat-card-header>
+        <mat-card-content>
+          <div class="bar-row" *ngFor="let item of u.byStatus" [matTooltip]="item.label + ': ' + item.total">
+            <span class="bar-label">{{ item.label }}</span>
+            <span class="bar-track"><span class="bar" [style.width]="width(item.total, maxOf(u.byStatus))"></span></span>
+            <span class="bar-value">{{ item.total }}</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      <mat-card>
+        <mat-card-header><mat-card-title>Usuarios por rol</mat-card-title></mat-card-header>
+        <mat-card-content>
+          <div class="bar-row" *ngFor="let item of u.byRole" [matTooltip]="item.label + ': ' + item.total">
+            <span class="bar-label">{{ item.label }}</span>
+            <span class="bar-track"><span class="bar" [style.width]="width(item.total, maxOf(u.byRole))"></span></span>
+            <span class="bar-value">{{ item.total }}</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </ng-container>
+
+  <!-- Operación: con filtro de fechas -->
+  <div class="row between operations-header">
+    <h2>Cajas, cajeros y gestores</h2>
+    <div class="row">
+      <mat-form-field subscriptSizing="dynamic">
+        <mat-label>Desde</mat-label>
+        <input matInput type="date" [(ngModel)]="from" [max]="to" (ngModelChange)="loadOperations()" />
+      </mat-form-field>
+      <mat-form-field subscriptSizing="dynamic">
+        <mat-label>Hasta</mat-label>
+        <input matInput type="date" [(ngModel)]="to" [min]="from" (ngModelChange)="loadOperations()" />
+      </mat-form-field>
+      <button mat-stroked-button (click)="setToday()">Hoy</button>
+    </div>
+  </div>
+  <p class="range-error" *ngIf="!validRange">La fecha inicial no puede ser posterior a la final.</p>
+
+  <ng-container *ngIf="operations as o">
+    <div class="card-grid">
+      <div class="stat">
+        <div class="value">{{ totals.turns }}</div>
+        <div class="label">Turnos asignados</div>
+      </div>
+      <div class="stat">
+        <div class="value">{{ totals.attended }}</div>
+        <div class="label">Turnos atendidos</div>
+      </div>
+      <div class="stat">
+        <div class="value">{{ totals.pending }}</div>
+        <div class="label">Turnos sin atender</div>
+      </div>
+    </div>
+
+    <mat-card class="section">
+      <mat-card-header>
+        <mat-card-title>Turnos por caja</mat-card-title>
+        <mat-card-subtitle>
+          <span class="legend"><i class="swatch attended"></i> Atendidos</span>
+          <span class="legend"><i class="swatch pending"></i> Sin atender</span>
+        </mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="empty compact" *ngIf="!totals.turns">No hay turnos en el rango seleccionado.</div>
+        <div class="bar-row" *ngFor="let cash of o.cashes">
+          <span class="bar-label">{{ cash.cashDescription }}</span>
+          <span class="bar-track">
+            <span class="stack" [style.width]="width(cash.totalTurns, maxTurns)">
+              <span class="segment attended" *ngIf="cash.attended" [style.flex]="cash.attended"
+                    [matTooltip]="cash.cashDescription + ' · Atendidos: ' + cash.attended"></span>
+              <span class="segment pending" *ngIf="cash.pending" [style.flex]="cash.pending"
+                    [matTooltip]="cash.cashDescription + ' · Sin atender: ' + cash.pending"></span>
+            </span>
+          </span>
+          <span class="bar-value wide">{{ cash.attended }} de {{ cash.totalTurns }}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <div class="two-columns">
+      <mat-card>
+        <mat-card-header><mat-card-title>Cajeros</mat-card-title></mat-card-header>
+        <mat-card-content>
+          <table mat-table [dataSource]="o.cashiers">
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef>Cajero</th>
+              <td mat-cell *matCellDef="let c">{{ c.fullName }}<div class="muted small">{{ c.username }}</div></td>
+            </ng-container>
+            <ng-container matColumnDef="cash">
+              <th mat-header-cell *matHeaderCellDef>Caja</th>
+              <td mat-cell *matCellDef="let c">{{ c.cashDescription || 'Sin asignar' }}</td>
+            </ng-container>
+            <ng-container matColumnDef="attended">
+              <th mat-header-cell *matHeaderCellDef class="number">Turnos atendidos</th>
+              <td mat-cell *matCellDef="let c" class="number">{{ c.attended }}</td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="cashierColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: cashierColumns"></tr>
+            <tr *matNoDataRow><td class="empty" colspan="3">No hay cajeros registrados.</td></tr>
+          </table>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card>
+        <mat-card-header><mat-card-title>Gestores</mat-card-title></mat-card-header>
+        <mat-card-content>
+          <table mat-table [dataSource]="o.gestores">
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef>Gestor</th>
+              <td mat-cell *matCellDef="let g">{{ g.fullName }}<div class="muted small">{{ g.username }}</div></td>
+            </ng-container>
+            <ng-container matColumnDef="assigned">
+              <th mat-header-cell *matHeaderCellDef class="number">Turnos asignados</th>
+              <td mat-cell *matCellDef="let g" class="number">{{ g.assigned }}</td>
+            </ng-container>
+            <ng-container matColumnDef="attended">
+              <th mat-header-cell *matHeaderCellDef class="number">Atendidos</th>
+              <td mat-cell *matCellDef="let g" class="number">{{ g.attended }}</td>
+            </ng-container>
+            <ng-container matColumnDef="usersCreated">
+              <th mat-header-cell *matHeaderCellDef class="number">Usuarios creados</th>
+              <td mat-cell *matCellDef="let g" class="number">{{ g.usersCreated }}</td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="gestorColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: gestorColumns"></tr>
+            <tr *matNoDataRow><td class="empty" colspan="4">No hay gestores registrados.</td></tr>
+          </table>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </ng-container>
+</div>
