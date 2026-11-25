@@ -1,21 +1,21 @@
 # Registro de prompts
 
-Prompts enviados al agente (Claude Code), en orden cronológico.
+Prompts enviados al agente (Claude Code), en orden cronológico y resumidos. Se omiten los datos personales.
 
-## 1. Análisis de la prueba y plan
+## 1. Análisis y plan
 
-Se adjuntó el PDF del enunciado.
+> Revisemos el enunciado de la prueba y armemos un plan: qué hay que hacer, con qué tecnologías y con qué arquitectura. Quiero definirlo primero conmigo y luego pasar al desarrollo. Indícame también si se me escapa algún punto de la entrega.
 
-> Te voy a compartir el correo que me enviaron y la prueba técnica para echarle un ojo a lo que hay que hacer, y armamos un plan, las tecnologías y las arquitecturas para definirlo primero conmigo y luego te echas al ruedo.
->
-> ¿Primero qué vamos a hacer? ¿Cómo lo vamos a hacer? ¿Qué debo enviar como primer correo? Y no sé si se me escape algo más, ayúdame con eso.
+**Resultado:** propuesta de stack y de orden de trabajo, y lista de los puntos obligatorios.
 
-**Resultado:** propuesta de stack (.NET 8, Onion, EF Core, PostgreSQL, Angular con Angular Material, Docker), orden de trabajo y lista de puntos obligatorios.
+## 2. Decisiones de stack y base del backend
 
-## 2. Preparación del entorno y primer commit
+> Vamos con PostgreSQL, .NET 8 y Angular Material. Empecemos con el orden de trabajo: estructura del repositorio y primer commit, y luego seguimos avanzando.
 
-> Instalemos Docker primero y empecemos ya con el orden de trabajo: vamos con el punto 1 y 2, que sería hasta el primer commit, y luego seguimos avanzando.
->
-> Vamos con Postgres, .NET 8 y Angular Material.
+**Resultado:** estructura `Backend/`, `Frontend/` y `AI/`; solución Onion con el modelo de datos, cifrado de datos sensibles, JWT con claims cifradas, funciones de PostgreSQL, login y CRUD de usuarios.
 
-**Resultado:** instalación de Docker Desktop, estructura inicial del repositorio (`Backend/`, `Frontend/`, `AI/`) y primer commit.
+## 3. Convenciones del proyecto
+
+> Definamos skills útiles para el proyecto, incluyendo una de diseño, y dejemos las instalaciones documentadas en el README general. En los prompts no debe aparecer información sensible.
+
+**Resultado:** skills `backend-conventions` y `frontend-conventions`, y sección de requisitos en el README principal.

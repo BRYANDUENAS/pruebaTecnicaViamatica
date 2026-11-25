@@ -29,6 +29,23 @@ Sistema de gestión de caja y turnos para una empresa que brinda servicios de in
 | UI | Angular Material |
 | Contenedores | Docker y docker-compose |
 
+## Requisitos del entorno
+
+| Herramienta | Versión usada | Para qué |
+|---|---|---|
+| Docker Desktop | 29.9 (Compose v5.7) | Ejecutar la base de datos, la API y el frontend |
+| .NET SDK | 8.0 | Compilar el backend fuera de Docker |
+| Node.js | 22 | Compilar el frontend fuera de Docker |
+| dotnet-ef | 9.0 | Generar migraciones |
+
+Para ejecutar la entrega solo se necesita Docker; el resto es para desarrollo.
+
+En desarrollo, la base de datos corre en un contenedor en el puerto `5544`:
+
+```bash
+docker run -d --name viamatica-dev-db -e POSTGRES_USER=viamatica -e POSTGRES_PASSWORD=viamatica_dev -e POSTGRES_DB=viamatica -p 5544:5432 postgres:16-alpine
+```
+
 ## Cómo ejecutar
 
 Las instrucciones de ejecución con Docker se agregan al completar la dockerización.
