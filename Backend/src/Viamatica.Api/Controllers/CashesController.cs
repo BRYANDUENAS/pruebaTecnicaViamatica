@@ -49,6 +49,11 @@ public class CashesController : ControllerBase
 
     // ----- Asignación de cajeros: solo gestor -----
 
+    /// <summary>Cajeros activos disponibles para asignar, con su caja actual.</summary>
+    [HttpGet("cashiers")]
+    [Authorize(Roles = AdminOrGestor)]
+    public Task<List<CashierOptionDto>> Cashiers(CancellationToken ct) => _cashes.CashiersAsync(ct);
+
     /// <summary>Asigna un cajero a la caja. Máximo 2 por caja y una sola caja por cajero.</summary>
     [HttpPost("{id:int}/users")]
     [Authorize(Roles = RoleCodes.Gestor)]

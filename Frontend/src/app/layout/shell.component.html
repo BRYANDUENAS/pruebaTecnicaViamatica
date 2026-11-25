@@ -1,0 +1,64 @@
+<mat-sidenav-container class="shell">
+  <mat-sidenav
+    class="sidebar"
+    [mode]="compact() ? 'over' : 'side'"
+    [opened]="opened()"
+    (closedStart)="opened.set(false)">
+    <div class="brand">
+      <mat-icon>wifi</mat-icon>
+      <div>
+        <strong>NetCaja</strong>
+        <span>Gestión de caja y turnos</span>
+      </div>
+    </div>
+
+    <!-- El menú llega del backend según el rol del usuario. -->
+    <mat-nav-list>
+      <a
+        mat-list-item
+        *ngFor="let item of auth.menu()"
+        [routerLink]="item.route"
+        routerLinkActive="active"
+        #link="routerLinkActive"
+        [activated]="link.isActive"
+        (click)="closeIfCompact()">
+        <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+        <span matListItemTitle>{{ item.label }}</span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <mat-toolbar class="topbar">
+      <button mat-icon-button (click)="opened.set(!opened())" aria-label="Mostrar u ocultar el menú">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span class="spacer"></span>
+
+      <ng-container *ngIf="auth.user() as user">
+        <div class="user">
+          <strong>{{ user.firstName }} {{ user.lastName }}</strong>
+          <span>{{ user.rolName }}</span>
+        </div>
+        <button mat-icon-button [matMenuTriggerFor]="userMenu" class="avatar" aria-label="Opciones del usuario">
+          {{ initials }}
+        </button>
+        <mat-menu #userMenu="matMenu">
+          <div class="menu-user">
+            <strong>{{ user.username }}</strong>
+            <span>{{ user.email }}</span>
+          </div>
+          <mat-divider></mat-divider>
+          <button mat-menu-item (click)="auth.logout()">
+            <mat-icon>logout</mat-icon>
+            <span>Cerrar sesión</span>
+          </button>
+        </mat-menu>
+      </ng-container>
+    </mat-toolbar>
+
+    <main>
+      <router-outlet></router-outlet>
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

@@ -78,3 +78,9 @@ Reglas definidas en la revisión de la fase:
 
 > Vamos con el frontend. Ya tengo instalado el CLI 21 de Angular, así que utilicemos NgModules y no componentes standalone, ya que debemos modularizar y usar rutas que llamen a los módulos. Utiliza un color azul primario y turquesa de acento, con un login que haga referencia a una empresa de internet. El menú debe ir preferiblemente en un sidebar, cargado desde la base de datos de forma dinámica según el rol, y en la barra superior el usuario y el cierre de sesión.
 
+**Resultado:** proyecto Angular 21 con NgModules y lazy loading, tema de Angular Material, login y recuperación de contraseña, layout con sidebar de menú dinámico y barra superior, guards, interceptores y pantalla de bienvenida.
+
+## 9. Pantallas de usuarios y clientes
+
+> Continuemos con las pantallas de usuarios y clientes, ya que son parecidas y comparten la misma carga masiva de datos. Luego avanzaremos con la página de turnos, la de caja y finalmente el dashboard. Como ya está armada toda la lógica del backend, se trata de construir las pantallas, consumir los datos y mostrarlos de forma elegante en la interfaz.
+

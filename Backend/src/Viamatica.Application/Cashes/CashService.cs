@@ -18,6 +18,9 @@ public record CashDto(
     DateTime? OpenedAt,
     IReadOnlyList<CashUserDto> Users);
 
+/// <summary>Cajero activo y, si la tiene, la caja a la que está asignado.</summary>
+public record CashierOptionDto(int UserId, string Username, string FullName, int? CashId, string? CashDescription);
+
 public record SaveCashRequest(string CashDescription, bool Active = true);
 
 public record AssignCashierRequest(int UserId);
@@ -115,6 +118,19 @@ public class CashService
     }
 
     // ----- Asignación de cajeros (gestor) -----
+
+    /// <summary>Cajeros activos que el gestor puede asignar, con su caja actual.</summary>
+    public async Task<List<CashierOptionDto>> CashiersAsync(CancellationToken ct) =>
+        await _db.Users
+            .Where(u => u.RolId == RoleCodes.CajeroId && u.StatusId == UserStatusCodes.Active)
+            .OrderBy(u => u.Username)
+            .Select(u => new CashierOptionDto(
+                u.UserId,
+                u.Username,
+                u.FirstName + " " + u.LastName,
+                u.UserCashes.Select(uc => (int?)uc.CashId).FirstOrDefault(),
+                u.UserCashes.Select(uc => uc.Cash.CashDescription).FirstOrDefault()))
+            .ToListAsync(ct);
 
     public async Task<CashDto> AssignAsync(int cashId, AssignCashierRequest request, CancellationToken ct)
     {

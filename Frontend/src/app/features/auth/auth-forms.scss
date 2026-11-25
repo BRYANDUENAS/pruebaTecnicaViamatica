@@ -1,0 +1,16 @@
+h2 { margin: 0 0 4px; font: var(--mat-sys-headline-medium); }
+p.muted { margin: 0 0 24px; }
+
+.auth-form { display: grid; gap: 6px; }
+.submit { height: 48px; margin-top: 8px; font-size: 15px; }
+.form-error { margin: 0; color: var(--app-warn); font-size: 13px; }
+
+.link {
+  display: inline-block;
+  margin-top: 20px;
+  color: var(--mat-sys-primary);
+  text-decoration: none;
+  font-weight: 500;
+
+  &:hover { text-decoration: underline; }
+}
