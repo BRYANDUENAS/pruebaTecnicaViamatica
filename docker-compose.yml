@@ -1,0 +1,54 @@
+# Levanta la base de datos, la API y el frontend:
+#   docker compose up --build
+#
+# Frontend: http://localhost:8080
+# Swagger:  http://localhost:5080/swagger
+#
+# Las variables entre ${...} se leen del archivo .env si existe (ver .env.example).
+# Todas tienen un valor por defecto, así que el sistema arranca sin ese archivo.
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: viamatica
+      POSTGRES_USER: viamatica
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-viamatica_dev}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U viamatica -d viamatica"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build: ./Backend
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ConnectionStrings__Default: Host=db;Port=5432;Database=viamatica;Username=viamatica;Password=${DB_PASSWORD:-viamatica_dev}
+      Security__EncryptionKey: ${ENCRYPTION_KEY:-dev-only-encryption-key-change-me}
+      Security__JwtKey: ${JWT_KEY:-dev-only-jwt-signing-key-change-me-0123456789}
+      Seed__DemoData: ${DEMO_DATA:-true}
+      # Opcionales: sin ellos no hay envío de correos ni asistente.
+      Email__User: ${EMAIL_USER:-}
+      Email__Password: ${EMAIL_PASSWORD:-}
+      Assistant__ApiKey: ${GEMINI_API_KEY:-}
+      Assistant__Model: ${GEMINI_MODEL:-gemini-2.5-flash}
+    volumes:
+      - api-logs:/app/logs
+    ports:
+      - "5080:8080"
+
+  web:
+    build: ./Frontend
+    depends_on:
+      - api
+    ports:
+      - "8080:80"
+
+volumes:
+  db-data:
+  api-logs:

@@ -1,0 +1,6 @@
+**/bin
+**/obj
+**/logs
+.vs
+# La imagen usa el SDK 8 que trae; no se fija la versión exacta del equipo de desarrollo.
+global.json

@@ -112,3 +112,15 @@ en esta pantalla mostraremos pantalla del administrador con dos pestañas, cajas
 > Antes de Docker quiero darle un plus a la prueba, algo que no pidieron pero que muestre el potencial. Primero, que la recuperación de contraseña sea por correo, para que al usuario le lleguen las nuevas credenciales. Segundo, implementar un asesor de IA: un chat para cada rol. Por ejemplo, el cajero escribe la cédula de un cliente y el asistente responde quién es, qué contrato tiene, desde cuándo y cuándo vence; el administrador puede preguntar cuántas cajas están activas o inactivas. Podemos usar un modelo de Gemini.
 
 **Resultado:** envío de una contraseña temporal al correo registrado (SMTP), manteniendo la validación de identidad como alternativa, y un asistente disponible en todas las pantallas con sugerencias por rol. El servidor reúne solo los datos que el rol puede ver y se los entrega al modelo como contexto; las credenciales quedan en variables de entorno, fuera del repositorio.
+
+## 15. Datos de demostración
+
+> Inserta registros en la base de datos para probar el asistente y ver la plataforma con más vida: un solo administrador, unos 3 gestores, de 8 a 10 cajas, cajeros, clientes y demás datos necesarios para que sea visual.
+
+**Resultado:** carga automática de datos ficticios al iniciar con la base vacía: gestores, cajeros en distintos estados, 10 cajas, 30 clientes, contratos, pagos y turnos de la última semana.
+
+## 16. Dockerización y entrega
+
+> Hagamos el commit y vamos con Docker.
+
+**Resultado:** imágenes del backend y del frontend, `docker-compose` con base de datos, API y frontend comunicados por nginx, colección de Postman y README de cada proyecto.
